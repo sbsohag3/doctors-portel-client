@@ -1,8 +1,8 @@
 import React from 'react';
-import fluoride from '../../assets/images/fluoride.png';
-import cavity from '../../assets/images/cavity.png';
-import whitening from '../../assets/images/whitening.png';
-import Service from './Service';
+import fluoride from '../../../assets/images/fluoride.png';
+import cavity from '../../../assets/images/cavity.png';
+import whitening from '../../../assets/images/whitening.png';
+import Service from '../Service/Service';
 
 const Services = () => {
     const services = [
@@ -26,7 +26,7 @@ const Services = () => {
         },
     ];
     return (
-        <div className='my-28'>
+        <section className='my-28'>
             <div className='text-center'>
                 <h3 className='text-primary  text-xl font-bold uppercase'>Our Services</h3>
                 <h2 className='text-4xl'>Services We Provide</h2>
@@ -39,7 +39,7 @@ const Services = () => {
                     ></Service>)
                 }
             </div>
-        </div>
+        </section>
     );
 };
 
