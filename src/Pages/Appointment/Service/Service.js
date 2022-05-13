@@ -1,6 +1,5 @@
 import React from "react";
 
-
 const Service = ({ service, setTreatment }) => {
   const { name, slots } = service;
   return (
@@ -19,7 +18,7 @@ const Service = ({ service, setTreatment }) => {
         </p>
         <div className="card-actions justify-center">
           <label
-            for="booking-modal"
+            htmlFor="booking-modal"
             disabled={slots.length === 0}
             onClick={() => setTreatment(service)}
             className="btn btn-primary uppercase text-white font-bold bg-gradient-to-r from-secondary to-primary"
