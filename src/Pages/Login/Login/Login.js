@@ -8,19 +8,21 @@ import auth from "../../../firebase.init";
 import { useForm } from "react-hook-form";
 import Loading from "../../Shared/Loading/Loading";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import useToken from "../../../hooks/useToken/useToken";
 
 const Login = () => {
   const [signInWithEmailAndPassword, sUser, sLoading, sError] =
     useSignInWithEmailAndPassword(auth);
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
+  const [token] = useToken(sUser || gUser)
   const navigate = useNavigate();
   const location = useLocation();
   let from = location.state?.from?.pathname || "/";
   useEffect(() => {
-    if (sUser || gUser) {
+    if (token) {
       navigate(from, { replace: true });
     }
-  }, [sUser, gUser, navigate, from]);
+  }, [token, navigate, from]);
   const {
     register,
     formState: { errors },

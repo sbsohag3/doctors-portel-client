@@ -1,55 +1,73 @@
 import React from "react";
-import { FcGoogle } from "react-icons/fc";
-import {
-  useCreateUserWithEmailAndPassword,
-  useSignInWithGoogle,
-  useUpdateProfile,
-} from "react-firebase-hooks/auth";
-
-import { Link, useNavigate } from "react-router-dom";
-import auth from "../../../firebase.init";
-import Loading from "../../Shared/Loading/Loading";
 import { useForm } from "react-hook-form";
-import useToken from "../../../hooks/useToken/useToken";
+import { useQuery } from "react-query";
+import { toast } from "react-toastify";
+import Loading from "../../Shared/Loading/Loading";
 
-const SignUp = () => {
-  const [createUserWithEmailAndPassword, user, loading, error] =
-    useCreateUserWithEmailAndPassword(auth);
-  const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
-  const [updateProfile, updating, uError] = useUpdateProfile(auth);
-  const [token] = useToken(user || gUser);
-
-  const navigate = useNavigate();
+const AddDoctors = () => {
   const {
     register,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm();
 
-  let signInError;
+  const { data: services, isLoading } = useQuery("services", () =>
+    fetch("http://localhost:5000/services").then((res) => res.json())
+  );
+  const imgStorageKey = "6bfda015f6c8c5101d0d2aed16e27a44";
 
-  if (gLoading || loading || updating) {
+  const onSubmit = async (data) => {
+    const image = data.image[0];
+    const fromData = new FormData();
+    fromData.append("image", image);
+    const url = `https://api.imgbb.com/1/upload?key=${imgStorageKey}`;
+    fetch(url, {
+      method: "POST",
+      body: fromData,
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.success) {
+          const img = result.data.url;
+          const doctor = {
+            name: data.name,
+            email: data.email,
+            specialty: data.specialty,
+            img: img,
+          };
+          fetch("http://localhost:5000/doctor", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+              authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+            body: JSON.stringify(doctor),
+          })
+            .then((res) => res.json())
+            .then((inserted) => {
+              if (inserted.insertedId) {
+                toast.success("Doctor Added Successfully", {
+                  position: "top-center",
+                });
+                reset();
+              } else {
+                toast.error("Failed to add the Doctor", {
+                  position: "top-center",
+                });
+              }
+            });
+        }
+      });
+  };
+  if (isLoading) {
     return <Loading />;
   }
-  if (error || gError || uError) {
-    signInError = (
-      <p className="text-red-500 text-center">
-        {error?.message || gError?.message || uError?.message}
-      </p>
-    );
-  }
-  if (token) {
-    navigate("/appointment");
-  }
-  const onSubmit = async (data) => {
-    await updateProfile({ displayName: data.name });
-    await createUserWithEmailAndPassword(data.email, data.password);
-  };
   return (
-    <div className="flex lg:h-screen justify-center items-center">
+    <div className="flex mt-4 justify-center items-center">
       <div className="card w-96 bg-base-100 shadow-xl">
-        <div className="card-body">
-          <h2 className="text-center text-2xl font-bold">Sign Up</h2>
+        <div className="card-body bg-slate-100">
+          <h2 className="text-center text-2xl font-bold">Add a New Doctor</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-control w-full max-w-xs">
               <label className="label">
@@ -108,63 +126,48 @@ const SignUp = () => {
             </div>
             <div className="form-control w-full max-w-xs">
               <label className="label">
-                <span className="label-text">Password</span>
+                <span className="label-text">Specialty</span>
+              </label>
+              <select
+                className="select w-full max-w-xs"
+                {...register("specialty")}
+              >
+                {services.map((service) => (
+                  <option key={service._id}>{service.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-control w-full max-w-xs">
+              <label className="label">
+                <span className="label-text">Select Photo:</span>
               </label>
               <input
-                type="password"
-                placeholder="Password"
-                className="input input-bordered w-full max-w-xs"
-                {...register("password", {
+                type="file"
+                {...register("image", {
                   required: {
                     value: true,
-                    message: "Password is Required",
-                  },
-                  minLength: {
-                    value: 8,
-                    message: "Must be 8 characters or longer",
+                    message: "Photo url is Required",
                   },
                 })}
               />
               <label className="label">
-                {errors.password?.type === "required" && (
+                {errors.name?.type === "required" && (
                   <span className="label-text-alt text-red-500">
-                    {errors.password.message}
-                  </span>
-                )}
-                {errors.password?.type === "minLength" && (
-                  <span className="label-text-alt text-red-500">
-                    {errors.password.message}
+                    {errors.name.message}
                   </span>
                 )}
               </label>
             </div>
-            {signInError} <br />
             <input
-              className="btn w-full max-w-xs text-white"
+              className="btn w-full  mt-7 max-w-xs text-white"
               type="submit"
-              value="Log in"
+              value="Add Doctor"
             />
           </form>
-          <p className="text-center">
-            <small>
-              Already Have an Account?
-              <Link className="text-primary" to="/login">
-                Please Login
-              </Link>
-            </small>
-          </p>
-          <div className="divider">OR</div>
-          <button
-            onClick={() => signInWithGoogle()}
-            className="btn btn-outline"
-          >
-            <FcGoogle className="mx-1 text-2xl" />
-            Continue With Google
-          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default SignUp;
+export default AddDoctors;
