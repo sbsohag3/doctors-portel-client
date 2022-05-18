@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 const DeleteConfirmModal = ({ deletingDoctor, refetch, setDeletingDoctor }) => {
   const { name, email } = deletingDoctor;
   const handleDelete = () => {
-    fetch(`http://localhost:5000/doctor/${email}`, {
+    fetch(`https://desolate-hollows-61905.herokuapp.com/doctor/${email}`, {
       method: "DELETE",
       headers: {
         authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -26,8 +26,9 @@ const DeleteConfirmModal = ({ deletingDoctor, refetch, setDeletingDoctor }) => {
       <input type="checkbox" id="delete-confirm-modal" class="modal-toggle" />
       <div class="modal modal-bottom sm:modal-middle">
         <div class="modal-box">
-         
-          <p class="py-4 text-red-500">Are You Sure You Want to delete {name}?</p>
+          <p class="py-4 text-red-500">
+            Are You Sure You Want to delete {name}?
+          </p>
           <div class="modal-action">
             <button onClick={() => handleDelete()} class="btn btn-xs btn-error">
               Remove

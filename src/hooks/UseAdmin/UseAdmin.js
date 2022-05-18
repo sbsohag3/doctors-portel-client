@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
 const UseAdmin = (user) => {
-  const [adminLoading, setAdminLoading]= useState(true)
+  const [adminLoading, setAdminLoading] = useState(true);
   const [admin, setAdmin] = useState(false);
   useEffect(() => {
     const email = user?.email;
     if (email) {
-      fetch(`http://localhost:5000/admin/${email}`, {
+      fetch(`https://desolate-hollows-61905.herokuapp.com/admin/${email}`, {
         method: "GET",
         headers: {
           "content-type": "application/json",
@@ -16,7 +16,7 @@ const UseAdmin = (user) => {
         .then((res) => res.json())
         .then((data) => {
           setAdmin(data.admin);
-          setAdminLoading(false)
+          setAdminLoading(false);
         });
     }
   }, [user]);

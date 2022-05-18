@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const BookingModal = ({ treatment, date, setTreatment, refetch }) => {
   const [user] = useAuthState(auth);
-  const { _id, name, slots } = treatment;
+  const { _id, name, slots, price } = treatment;
   const formattedDate = format(date, "PP");
   const handleBooking = (event) => {
     event.preventDefault();
@@ -17,11 +17,12 @@ const BookingModal = ({ treatment, date, setTreatment, refetch }) => {
       treatment: name,
       date: formattedDate,
       slot,
+      price,
       patient: user.email,
       patientName: user.displayName,
       phone: event.target.phone.value,
     };
-    fetch("http://localhost:5000/booking", {
+    fetch("https://desolate-hollows-61905.herokuapp.com/booking", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -95,10 +96,18 @@ const BookingModal = ({ treatment, date, setTreatment, refetch }) => {
               className="input input-bordered w-full max-w-xs"
             />
             <input
+              type="number"
+              name="price"
+              disabled
+              value={price}
+              className="input input-bordered w-full max-w-xs"
+            />
+            <input
               type="text"
               name="phone"
               placeholder="Phone Number"
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <input
               type="submit"

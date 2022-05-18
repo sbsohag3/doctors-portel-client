@@ -13,7 +13,9 @@ const AddDoctors = () => {
   } = useForm();
 
   const { data: services, isLoading } = useQuery("services", () =>
-    fetch("http://localhost:5000/services").then((res) => res.json())
+    fetch("https://desolate-hollows-61905.herokuapp.com/services").then((res) =>
+      res.json()
+    )
   );
   const imgStorageKey = "6bfda015f6c8c5101d0d2aed16e27a44";
 
@@ -36,7 +38,7 @@ const AddDoctors = () => {
             specialty: data.specialty,
             img: img,
           };
-          fetch("http://localhost:5000/doctor", {
+          fetch("https://desolate-hollows-61905.herokuapp.com/doctor", {
             method: "POST",
             headers: {
               "content-type": "application/json",

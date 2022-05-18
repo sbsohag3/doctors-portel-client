@@ -7,7 +7,7 @@ import Appointment from "./Pages/Appointment/Appointment/Appointment";
 import Login from "./Pages/Login/Login/Login";
 import SignUp from "./Pages/Login/SignUp/SignUp";
 import RequireAuth from "./Pages/Login/RequireAuth/RequireAuth";
-import Review from "./Pages/Home/Review/Review";
+
 import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -18,6 +18,7 @@ import Users from "./Pages/Dashboards/Users/Users";
 import RequireAdmin from "./Pages/Login/RequireAdmin/RequireAdmin";
 import AddDoctors from "./Pages/Dashboards/AddDoctors/AddDoctors";
 import ManageDoctors from "./Pages/Dashboards/ManageDoctors/ManageDoctors";
+import Payment from "./Pages/Dashboards/Payment/Payment";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
         >
           <Route index element={<MyAppointment />}></Route>
           <Route path="review" element={<MyReview />}></Route>
+          <Route path="payment/:id" element={<Payment />}></Route>
           <Route
             path="users"
             element={
@@ -68,7 +70,7 @@ function App() {
             }
           ></Route>
         </Route>
-        {/* <Route path="/review" element={<Review />} /> */}
+        
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />

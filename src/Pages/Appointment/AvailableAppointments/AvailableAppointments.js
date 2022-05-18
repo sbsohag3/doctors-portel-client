@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { format } from "date-fns";
 import Service from "../Service/Service";
 import BookingModal from "../BookingModal/BookingModal";
@@ -11,17 +11,21 @@ const AvailableAppointments = ({ date }) => {
 
   const formattedDate = format(date, "PP");
 
-  const { data: services, isLoading, refetch } = useQuery(["available", formattedDate], () =>
-    fetch(`http://localhost:5000/available?date=${formattedDate}`).then((res) =>
-      res.json()
-    )
+  const {
+    data: services,
+    isLoading,
+    refetch,
+  } = useQuery(["available", formattedDate], () =>
+    fetch(
+      `https://desolate-hollows-61905.herokuapp.com/available?date=${formattedDate}`
+    ).then((res) => res.json())
   );
   if (isLoading) {
     return <Loading />;
   }
 
   // useEffect(() => {
-  //   fetch(`http://localhost:5000/available?date=${formattedDate}`)
+  //   fetch(`https://desolate-hollows-61905.herokuapp.com/available?date=${formattedDate}`)
   //     .then((res) => res.json())
   //     .then((data) => setServices(data));
   // }, [formattedDate]);
